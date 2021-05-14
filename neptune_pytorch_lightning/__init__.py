@@ -14,15 +14,12 @@
 # limitations under the License.
 #
 
-import warnings
+from neptune_pytorch_lightning._version import get_versions
 
-try:
-    # neptune-client=0.9.0 package structure
-    import neptune.new as neptune
-    from neptune.new.internal.utils import verify_type
-except ImportError:
-    # neptune-client=1.0.0 package structure
-    import neptune
-    from neptune.internal.utils import verify_type
+__all__ = [
+    '__version__',
+]
 
-# TODO: Implementation of neptune-integration here
+__version__ = get_versions()['version']
+
+del get_versions
