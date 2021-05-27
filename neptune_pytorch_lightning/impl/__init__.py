@@ -13,21 +13,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+__all__ = [
+    'NeptuneLogger',
+]
 
 import logging
-import operator
 from argparse import Namespace
 from typing import Any, Dict, Optional, Union
 
 import torch
-
-from pytorch_lightning import __version__
+from neptune_pytorch_lightning import __version__
 from pytorch_lightning.loggers.base import LightningLoggerBase, rank_zero_experiment
-from pytorch_lightning.utilities import _module_available, rank_zero_only
-from pytorch_lightning.utilities.imports import _compare_version
+from pytorch_lightning.utilities import rank_zero_only
 
+try:
+    # neptune-client=0.9.0 package structure
+    import neptune.new as neptune
+    from neptune.new.internal.utils import verify_type
+    from neptune.new.run import Run
+except ImportError:
+    # neptune-client=1.0.0 package structure
+    import neptune
+    from neptune.internal.utils import verify_type
+    from neptune.run import Run
 
 log = logging.getLogger(__name__)
+
+INTEGRATION_VERSION_KEY = 'source_code/integrations/neptune-pytorch-lightning'
 
 LEGACY_NEPTUNE_INIT_KWARGS = [
     'project_name',
@@ -49,29 +61,6 @@ LEGACY_NEPTUNE_INIT_KWARGS = [
     'notebook_id',
     'notebook_path',
 ]
-
-_NEPTUNE_AVAILABLE = _module_available("neptune")
-_NEPTUNE_GREATER_EQUAL_0_9 = _NEPTUNE_AVAILABLE and _compare_version("neptune", operator.ge, "0.9.0")
-
-if _module_available("neptune"):
-    from neptune import __version__ as neptune_versions
-
-    _NEPTUNE_AVAILABLE = neptune_versions.startswith('0.9.') or neptune_versions.startswith('1.')
-else:
-    _NEPTUNE_AVAILABLE = False
-
-if _NEPTUNE_AVAILABLE and _NEPTUNE_GREATER_EQUAL_0_9:
-    try:
-        from neptune import new as neptune
-        from neptune.new.run import Run
-        from neptune.new.exceptions import NeptuneLegacyProjectException, NeptuneOfflineModeFetchException
-    except ImportError:
-        import neptune
-        from neptune.run import Run
-        from neptune.exceptions import NeptuneLegacyProjectException, NeptuneOfflineModeFetchException
-else:
-    # needed for test mocks, and function signatures
-    neptune, Run = None, None
 
 
 class NeptuneLogger(LightningLoggerBase):
@@ -232,11 +221,6 @@ class NeptuneLogger(LightningLoggerBase):
             prefix: str = '',
             base_namespace: str = '',
             **neptune_run_kwargs):
-        if neptune is None:
-            raise ImportError(
-                'You want to use `neptune` in version >=0.9 logger which is not installed yet,'
-                ' install it with `pip install "neptune-client>=0.9"`.'
-            )
         used_legacy_kwargs = [
             legacy_kwarg for legacy_kwarg in neptune_run_kwargs.keys()
             if legacy_kwarg in LEGACY_NEPTUNE_INIT_KWARGS
@@ -300,7 +284,7 @@ class NeptuneLogger(LightningLoggerBase):
                     name=self._name,
                     **self._neptune_run_kwargs,
                 )
-                self._run_instance['source_code/integrations/neptune-pytorch-lightning'] = __version__
+                self._run_instance[INTEGRATION_VERSION_KEY] = __version__
             except NeptuneLegacyProjectException as e:
                 raise TypeError(f"""
                     Project {self._project} has not been imported to new structure yet.
