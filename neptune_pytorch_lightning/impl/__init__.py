@@ -19,6 +19,7 @@ __all__ = [
 
 import logging
 from argparse import Namespace
+from functools import cached_property
 from typing import Any, Dict, Optional, Union
 
 import torch
@@ -31,11 +32,13 @@ try:
     import neptune.new as neptune
     from neptune.new.internal.utils import verify_type
     from neptune.new.run import Run
+    from neptune.new.exceptions import NeptuneLegacyProjectException, NeptuneOfflineModeFetchException
 except ImportError:
     # neptune-client=1.0.0 package structure
     import neptune
     from neptune.internal.utils import verify_type
     from neptune.run import Run
+    from neptune.exceptions import NeptuneLegacyProjectException, NeptuneOfflineModeFetchException
 
 log = logging.getLogger(__name__)
 
@@ -364,12 +367,11 @@ class NeptuneLogger(LightningLoggerBase):
         if self._close_after_fit:
             self.run.stop()
 
-    @property
     def save_dir(self) -> Optional[str]:
         # Neptune does not save any local files
         return None
 
-    @property
+    @cached_property
     def name(self) -> str:
         try:
             self.run.sync()
@@ -377,7 +379,7 @@ class NeptuneLogger(LightningLoggerBase):
             return 'offline-name'
         return self.run['sys/name'].fetch()
 
-    @property
+    @cached_property
     def version(self) -> str:
         try:
             self.run.sync()
