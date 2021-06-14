@@ -19,7 +19,7 @@ __all__ = [
 
 import logging
 from argparse import Namespace
-from functools import cached_property
+from cached_property import cached_property
 from typing import Any, Dict, Optional, Union
 
 import torch
