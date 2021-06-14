@@ -16,7 +16,7 @@ def main():
         all_deps += extras[group_name]
     extras['all'] = all_deps
 
-    base_libs = ['neptune-client>=0.9.11', 'pytorch-lightning', 'cached-property==1.5.2']
+    base_libs = ['neptune-client>=0.9.11', 'pytorch-lightning']
 
     version = None
     if os.path.exists('PKG-INFO'):
