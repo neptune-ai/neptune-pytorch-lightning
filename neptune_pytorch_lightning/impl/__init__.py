@@ -376,7 +376,7 @@ class NeptuneLogger(LightningLoggerBase):
 
     @property
     def version(self) -> str:
-        return repr(__version__)
+        return self.run._short_id
 
     def _raise_deprecated_api_usage(self, f_name, sample_code):
         raise ValueError(f"The function you've used is deprecated.\n"
