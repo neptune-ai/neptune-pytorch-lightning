@@ -19,13 +19,12 @@ __all__ = [
 
 import logging
 from argparse import Namespace
-from functools import cached_property
 from typing import Any, Dict, Optional, Union
 
 import torch
 from neptune_pytorch_lightning import __version__
-from pytorch_lightning.loggers.base import LightningLoggerBase, rank_zero_experiment
 from pytorch_lightning.utilities import rank_zero_only
+from pytorch_lightning.loggers.base import LightningLoggerBase, rank_zero_experiment
 
 try:
     # neptune-client=0.9.0 package structure
@@ -371,21 +370,13 @@ class NeptuneLogger(LightningLoggerBase):
         # Neptune does not save any local files
         return None
 
-    @cached_property
+    @property
     def name(self) -> str:
-        try:
-            self.run.sync()
-        except NeptuneOfflineModeFetchException:
-            return 'offline-name'
-        return self.run['sys/name'].fetch()
+        return 'NeptuneLogger'
 
-    @cached_property
+    @property
     def version(self) -> str:
-        try:
-            self.run.sync()
-        except NeptuneOfflineModeFetchException:
-            return 'offline-id-1234'
-        return self.run['sys/id'].fetch()
+        return self.run._short_id
 
     def _raise_deprecated_api_usage(self, f_name, sample_code):
         raise ValueError(f"The function you've used is deprecated.\n"
