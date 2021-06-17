@@ -1,8 +1,8 @@
 import os
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
-from neptune_pytorch_lightning._version import get_versions
+import versioneer
 
 
 def main():
@@ -26,7 +26,7 @@ def main():
             if line.startswith('Version:'):
                 version = line[8:].strip()
     else:
-        version = get_versions()["version"]
+        version = versioneer.get_version()
 
     setup(
         name='neptune-pytorch-lightning',
@@ -48,7 +48,8 @@ def main():
         license='Apache License 2.0',
         install_requires=base_libs,
         extras_require=extras,
-        packages=['neptune_pytorch_lightning', 'neptune_pytorch_lightning.impl'],
+        packages=find_packages(),
+        cmdclass=versioneer.get_cmdclass(),
         zip_safe=False,
         classifiers=[
             # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
