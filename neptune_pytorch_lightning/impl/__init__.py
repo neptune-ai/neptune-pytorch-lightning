@@ -366,6 +366,7 @@ class NeptuneLogger(LightningLoggerBase):
         if self._close_after_fit:
             self.run.stop()
 
+    @property
     def save_dir(self) -> Optional[str]:
         # Neptune does not save any local files
         return None
