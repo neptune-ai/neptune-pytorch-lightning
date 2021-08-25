@@ -16,6 +16,7 @@ def main():
         all_deps += extras[group_name]
     extras['all'] = all_deps
 
+    # TODO: set neptune-client version released with https://github.com/neptune-ai/neptune-client/pull/673
     base_libs = ['neptune-client>=0.9.11', 'pytorch-lightning']
 
     version = None
@@ -53,8 +54,7 @@ def main():
         zip_safe=False,
         classifiers=[
             # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-            'Development Status :: 4 - Beta',
-            # 'Development Status :: 5 - Production/Stable',  # Switch to Stable when applicable
+            'Development Status :: 7 - Inactive'
             'Environment :: Console',
             'Intended Audience :: Developers',
             'Intended Audience :: Science/Research',
