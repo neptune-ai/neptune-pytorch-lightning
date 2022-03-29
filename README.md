@@ -17,7 +17,7 @@ Experiment tracking, model registry, data versioning, and live model monitoring 
 * log any additional metrics,
 * log performance charts and images,
 * save model checkpoints,
-* + do whatever you would expect from a modern ML metadata store.
+* do whatever you would expect from a modern ML metadata store.
 
 ![image](https://3733970374-files.gitbook.io/~/files/v0/b/gitbook-legacy-files/o/assets%2F-MT0sYKbymfLAAtTq4-t%2F-MkGt01ExOn9OvUKNBTt%2F-MkGtVAehbQgw9HIF5vH%2Fptl-dashboard.png?alt=media&token=becc2857-4c93-4b77-b45c-e8fbc28ff93e)
 *User-created dashboard that displays metrics and hyper-parameters.*
