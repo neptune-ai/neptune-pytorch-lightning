@@ -30,6 +30,31 @@ Experiment tracking, model registry, data versioning, and live model monitoring 
 * [Runs logged to the Neptune app](https://app.neptune.ai/o/common/org/pytorch-lightning-integration/experiments?split=tbl&dash=charts&viewId=faa75e77-5bd6-42b9-9379-863fe7a33227)
 * [Run example in Google Colab](https://colab.research.google.com/github/neptune-ai/examples/blob/main/integrations-and-supported-tools/pytorch-lightning/notebooks/Neptune_PyTorch_Lightning.ipynb)
 
+## Example 
+
+```python
+# On the command line:
+pip install neptune-client pytorch-lightning
+```
+```python
+# In Python:
+from pytorch_lightning import Trainer
+from pytorch_lightning.loggers import NeptuneLogger
+
+# Create NeptuneLogger
+neptune_logger = NeptuneLogger(
+    api_key="ANONYMOUS",
+    project="common/pytorch-lightning-integration",
+    tags=["training", "resnet"],  # optional
+)
+
+# Pass the NeptuneLogger instance to the Trainer
+trainer = Trainer(max_epochs=10, logger=neptune_logger)
+
+# Run training
+trainer.fit(my_model, my_dataloader)
+```
+
 ## Support
 
 If you got stuck or simply want to talk to us, here are your options:
